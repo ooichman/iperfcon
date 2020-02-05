@@ -5,7 +5,7 @@ ADD httpd-run.sh /usr/sbin/
 RUN echo "Updating all centos packages"; yum -y update && echo "Installing httpd"; yum -y install httpd iperf3
 #
 COPY api.cgi /var/www/cgi-bin/
-ADD httpd-run.sh /usr/sbin/
+#ADD httpd-run.sh /usr/sbin/
 RUN mkdir /home/apache && mkdir /home/apache/logs && chown apache:apache -R /home/apache
 RUN chown apache:apache /usr/sbin/httpd-run.sh && chmod 4755 /usr/sbin/httpd-run.sh
 RUN echo "IncludeOptional /home/apache/*.conf" >> /etc/httpd/conf/httpd.conf

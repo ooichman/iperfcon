@@ -1,4 +1,4 @@
-<img alt="Rook" src="media/iperf-logo.png" width="50%" height="50%">
+<img alt="Rook" src="media/iperf-logo.png" width="25%" height="25%">
 
 # iperfcon
 iperfcon is for Openshift/Kubernetes bandwidth testing the SDN network.
@@ -39,10 +39,10 @@ if you want to check the communication between 2 workers make sure the pods are 
 
 now run the curl command to the route to get the results:
 
-   #curl -X GET  http://localhost:8080/iperf/api.cgi?nan=wwww,server=10.201.225.158,port=5001,type=json
+   #curl -X GET  http://iperf-client-router/iperf/api.cgi?nan=wwww,server=iperf-server-service,port=5001,type=json
 
 if you want to look at the results in a nicer output you can pipe it to jq
 
-   #curl -X GET  http://localhost:8080/iperf/api.cgi?nan=wwww,server=10.201.225.158,port=5001,type=json | jq
+   #curl -X GET  http://iperf-client-router/iperf/api.cgi?nan=wwww,server=iperf-server-service,port=5001,type=json | jq
 
 
