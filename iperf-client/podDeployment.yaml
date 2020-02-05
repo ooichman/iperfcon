@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iperf-client
+  namespace: iperf
+spec:
+  selector:
+    matchLabels:
+      app: iperf-client
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: iperf-client
+    spec:
+      containers:
+        - name: iperf-client
+          image: quay.io/ooichman/iperf-client
+          ports:
+            - containerPort: 8080
