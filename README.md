@@ -1,4 +1,4 @@
-<img alt="Rook" src="media/iperf-logo.png" width="25%" height="25%">
+<img alt="Rook" src="media/iperf-logo.png" width="20%" height="20%">
 
 # iperfcon
 iperfcon is for Openshift/Kubernetes bandwidth testing the SDN network.
@@ -12,7 +12,7 @@ we can use it for several used cases:
 - network bandwidth between 2 workers
 - network bandwidth between a Worker and and external Server
 
-## how to use it 
+## Deploying iperfcon 
 the usage of the containers is very simple.
 
 first let's build the namespace for them :
@@ -37,12 +37,19 @@ if you want to check the communication between 2 workers make sure the pods are 
 - create a service for the iperf-server with port 5001 and a service for the iperf-client with port 8080
 - create a route for the iperf-client
 
+## How to Use it
 now run the curl command to the route to get the results:
 
-   #curl -X GET  http://iperf-client-router/iperf/api.cgi?nan=wwww,server=iperf-server-service,port=5001,type=json
+    # curl -X GET http://iperf-client-router/iperf/api.cgi?server=iperf-server-service,port=5001,type=json
+
+The RESTAPI only expect a GET request with the following values :
+
+- server - the iperf-server service IP address or name
+- port - the port you are using on the iperf-server (the default is 5001)
+- type - the type of output you want to see , that can be either HTML or JSON (lowercap latter ONLY!!)
 
 if you want to look at the results in a nicer output you can pipe it to jq
 
-   #curl -X GET  http://iperf-client-router/iperf/api.cgi?nan=wwww,server=iperf-server-service,port=5001,type=json | jq
+    # curl -X GET  http://iperf-client-router/iperf/api.cgi?server=iperf-server-service,port=5001,type=json | jq
 
 

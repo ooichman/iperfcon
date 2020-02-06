@@ -2,7 +2,7 @@ FROM centos:7
 MAINTAINER Oren Oichman
 #
 ADD httpd-run.sh /usr/sbin/
-RUN echo "Updating all centos packages"; yum -y update && echo "Installing httpd"; yum -y install httpd iperf3
+RUN chmod a+x /usr/sbin/httpd-run.sh && echo "Updating all centos packages"; yum -y update && echo "Installing httpd"; yum -y install httpd iperf3
 #
 COPY api.cgi /var/www/cgi-bin/
 #ADD httpd-run.sh /usr/sbin/
