@@ -14,8 +14,9 @@ RUN sed -i 's/Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf
 RUN sed -i 's/ErrorLog .*/ErrorLog \/dev\/stderr/g' /etc/httpd/conf/httpd.conf
 RUN sed -i 's/CustomLog .*/CustomLog \/dev\/stdout combined/g' /etc/httpd/conf/httpd.conf
 RUN sed -i 's/LoadModule auth_digest_module modules\/mod_auth_digest.so//' /etc/httpd/conf.modules.d/00-base.conf
-RUN echo "PidFile /home/apache/httpd.pid" >> /etc/httpd/conf/httpd.conf
-
+#RUN echo "PidFile /home/apache/httpd.pid" >> /etc/httpd/conf/httpd.conf
+RUN echo "PidFile /tmp/httpd.pid" >> /etc/httpd/conf/httpd.conf
+COPY iperf.conf /home/apache
 # Expose the default httpd port 8080
 ENV APACHE_HTTP_PORT_NUMBER=8080
 EXPOSE 8080
