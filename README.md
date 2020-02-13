@@ -37,6 +37,11 @@ if you want to check the communication between 2 workers make sure the pods are 
 - create a service for the iperf-server with port 5001 and a service for the iperf-client with port 8080
 - create a route for the iperf-client
 
+The iperf-server container has 2 environment variables you can run in the deployment:
+
+- IPERF_PROTOCOL - choose between tcp and udp (default: tcp)
+- IPERF_PORT - choose the port on which the iperf server will listen upon (default: 5001)
+
 ## How to Use it
 now run the curl command to the route to get the results:
 
