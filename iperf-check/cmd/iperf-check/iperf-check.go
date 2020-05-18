@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"log"
+	"io"
 )
 
 type urlvars struct {
@@ -38,12 +40,18 @@ func RunCheck(myvars urlvars) {
     for {
 		resp, err := http.Get(fullurl)
 		if err == nil {
-			fmt.Printf("GET for %s was successful", fullurl)
+			fmt.Printf("GET for %s was successful\n", fullurl)
+			defer resp.Body.Close()
+		    _, err = io.Copy(os.Stdout, resp.Body)
+            if err != nil {
+                log.Fatal(err)
+            }
 		} else {
-			fmt.Printf("Unable to reach %s", fullurl)
+			fmt.Printf("Unable to reach %s\n", fullurl)
 		}
+		
 		time.Sleep(time.Second * time.Duration(x)) 
-		defer resp.Body.Close()
+		
     }
 }
 
@@ -51,7 +59,7 @@ func main() {
 
 	// checking and testing the environment variables
 
-	urlinterval := getEnv("URL_INTERVAL", "300s")
+	urlinterval := getEnv("URL_INTERVAL", "300")
 	urlpath := getEnv("URL_PATH", "nil")
 
 	if urlpath == "nil" {
