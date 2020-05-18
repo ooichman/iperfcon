@@ -3,6 +3,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import os
 import re
 import subprocess
+import logging
 import json
 import traceback
 
@@ -118,12 +119,15 @@ class IperfCon:
             cmd.append('-f')
             cmd.append(self.iperfFormat)
         try:
+            logging.debug('invoking: %s', ' '.join(cmd))
             cmdOutput = subprocess.check_output(cmd, stderr=subprocess.STDOUT).decode()
+            logging.debug('returned from %s', ' '.join(cmd))
             return 0, cmdOutput, ''
         except subprocess.CalledProcessError as error:
             message = error.output.decode()
         except:
             message = 'Unable to run iperf3'
+        logging.debug('failed to run ' + ' '.join(cmd))
         return 503, message, contentTypes.get('plain')
 
     def _getSummaryLines(self):
@@ -243,6 +247,12 @@ if 'IPERF_PORT' in os.environ:
     httpPort = int(os.environ['IPERF_PORT'])
 else:
     httpPort = 8080
-print('starting HTTP server on port ' + str(httpPort))
+
+if 'LOG_LEVEL' in os.environ:
+    logging.basicConfig(format='%(asctime)s - %(message)s', level=os.environ['LOG_LEVEL'].upper())
+else:
+    logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+
+logging.info('starting HTTP server on port %d', httpPort)
 httpDaemon = HTTPServer(('', httpPort), SimpleHTTPRequestHandler)
 httpDaemon.serve_forever()
