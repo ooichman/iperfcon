@@ -45,7 +45,8 @@ The iperf-server container has 2 environment variables you can run in the deploy
 ## How to Use it
 now run the curl command to the route to get the results:
 
-    # curl -X GET http://iperf-client-router/iperf/api.cgi?server=iperf-server-service,port=5001,type=json
+    # curl -X GET \
+    http://iperf-client-router/iperf/api.cgi?server=iperf-server-service,port=5001,type=json
 
 The RESTAPI only expect a GET request with the following values :
 
@@ -55,6 +56,8 @@ The RESTAPI only expect a GET request with the following values :
 
 if you want to look at the results in a nicer output you can pipe it to jq
 
-    # curl -X GET  http://iperf-client-router/iperf/api.cgi?server=iperf-server-service,port=5001,type=json | jq
+    # curl -X GET  \
+      http://iperf-client-router/iperf/api.cgi?server=iperf-server-service,port=5001,type=json | \
+      jq
 
 
