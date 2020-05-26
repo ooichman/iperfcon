@@ -47,9 +47,7 @@ func RunCheck(myvars urlvars) {
 				fmt.Printf("GET for %s was successful\n", fullurl)
 			}
 			defer resp.Body.Close()
-			if myvars.url_debug == true {
 		    _, err = io.Copy(os.Stdout, resp.Body)
-			}
             if err != nil {
                 log.Fatal(err)
             }
@@ -98,7 +96,7 @@ func main() {
 		fmt.Println("the debug level is set to 1")
 	}
 	
-	urlpath := url_client + "/iperf/api.cgi?server=" + iprefserver + ",port=5001,type=json"
+	urlpath := "http://" + url_client + "/iperf/api.cgi?server=" + iprefserver + ",port=5001,type=json"
 	url := urlvars{url_int: urlinterval, url_path: urlpath, warning_bw: urlwarning, critical_bw: urlcritical, url_debug: usedebug}
 
 	RunCheck(url)
