@@ -1,2 +1,4 @@
 ---
 # defaults file for iperfcon
+state: present
+namspace_deployment: iperfcon

@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: iperf-check
-  namespace: iperf
 spec:
   selector:
     matchLabels:
@@ -17,16 +16,14 @@ spec:
         - name: iperf-check
           image: quay.io/ooichman/iperf-check
           env:
-          - name: URL_INTERVAL
-            value: 30
-          - name: IPREF_CLIENT_URI
-            value: ''
-          - name: IPREF_SERVER 
-            value: ''
-          - name: WARNING_LIMIT
-            value: 50000m
-          - name: CRITICAL_LIMIT
-            value: 30000m
-          - name: USE_DEBUG
-            value: False
-
+            - name: URL_INTERVAL
+              value: '30'
+            - name: IPREF_CLIENT_URI
+              value: "{{ iperf_client_route.resources[0].spec.host }}"
+            - name: IPREF_SERVER
+              value: "{{ iperf_server_svc.resources[0].metadata.name }}"
+            - name: WARNING_LIMIT
+              value: 50000m
+            - name: CRITICAL_LIMIT
+              value: 30000m
+          resources: {}          

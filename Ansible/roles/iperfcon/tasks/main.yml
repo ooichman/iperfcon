@@ -1,26 +1,55 @@
 ---
 - name: deploying the iperf-server pod
   k8s:
-   state: "{{ state }}"
-   definition: "{{ lookup('template', 'iperf-server-deployment.yml.j2') | from_yaml }}"
+    state: "{{ state }}"
+    definition: "{{ lookup('template', 'iperf-server-deployment.yml.j2') | from_yaml }}"
+    namespace: '{{ namspace_deployment }}'
    
 - name: deploying the iperf-server service
   k8s:
     state: "{{ state }}"
     definition: "{{ lookup('template', 'iperf-server-service.yml.j2') | from_yaml }}"
+    namespace: '{{ namspace_deployment }}'
 
 - name: deploying the iperf-client pod
   k8s:
     state: "{{ state }}"
     definition: "{{ lookup('template', 'iperf-client-deployment.yml.j2') | from_yaml }}"
+    namespace: '{{ namspace_deployment }}'
 
 - name: deploying the iperf-client service
   k8s:
     state: "{{ state }}"
     definition: "{{ lookup('template', 'iperf-client-service.yml.j2') | from_yaml }}"
+    namespace: '{{ namspace_deployment }}'
 
 - name: deploying the iperf-client route
   k8s:
     state: "{{ state }}"
     definition: "{{ lookup('template', 'iperf-client-route.yml.j2') | from_yaml }}"
+    namespace: '{{ namspace_deployment }}'
 
+- name: get the route for iperf client
+  k8s_info:
+    api_version: v1
+    kind: Route
+    name: iperf-client
+    namespace: '{{ namspace_deployment }}'
+  register: iperf_client_route
+
+- debug:
+    msg: "{{ iperf_client_route.resources[0].spec.host }}"
+
+- name: get the service of the iperf server
+  k8s_info:
+    api_version: v1
+    kind: Service
+    name: iperf-server
+    namespace: '{{ namspace_deployment }}'
+  register: iperf_server_svc
+
+- name: deploying the iperf-client pod
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('template', 'iperf-check-deployment.yml.j2') | from_yaml }}"
+    namespace: '{{ namspace_deployment }}'
