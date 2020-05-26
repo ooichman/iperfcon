@@ -14,6 +14,7 @@ type urlvars struct {
 	url_path    string
 	warning_bw  string
 	critical_bw string
+	url_debug	bool
 }
 
 func getEnv(key, fallback string) string {
@@ -32,7 +33,9 @@ func RunCheck(myvars urlvars) {
 
 	var x int
 	if _, err := fmt.Sscan(myvars.url_int, &x); err == nil {
-		fmt.Printf("the inteval is %d seconds\n", x)
+		if myvars.url_debug == true {
+			fmt.Printf("the inteval is %d seconds\n", x)
+		}
 	} else {
      	os.Exit(2)
 	}
@@ -40,7 +43,9 @@ func RunCheck(myvars urlvars) {
     for {
 		resp, err := http.Get(fullurl)
 		if err == nil {
-			fmt.Printf("GET for %s was successful\n", fullurl)
+			if myvars.url_debug == true {
+				fmt.Printf("GET for %s was successful\n", fullurl)
+			}
 			defer resp.Body.Close()
 		    _, err = io.Copy(os.Stdout, resp.Body)
             if err != nil {
@@ -48,6 +53,7 @@ func RunCheck(myvars urlvars) {
             }
 		} else {
 			fmt.Printf("Unable to reach %s\n", fullurl)
+			os.Exit(3)
 		}
 		
 		time.Sleep(time.Second * time.Duration(x)) 
@@ -60,17 +66,38 @@ func main() {
 	// checking and testing the environment variables
 
 	urlinterval := getEnv("URL_INTERVAL", "300")
-	urlpath := getEnv("URL_PATH", "nil")
+	url_client := getEnv("IPREF_CLIENT_URI", "nil")
 
-	if urlpath == "nil" {
-		fmt.Println("Error - the URL_PATH is not set")
+	if url_client == "nil" {
+		fmt.Println("Error - the IPREF_CLIENT_URI is not set")
 		os.Exit(3)
+	}
+
+	iprefserver := getEnv("IPREF_SERVER","nil")
+	
+	if iprefserver == "nil" {
+		fmt.Println("Error - the IPREF_SERVER is not set")
 	}
 
 	urlcritical := getEnv("CRITICAL_LIMIT", "30000m")
 	urlwarning := getEnv("WARNING_LIMIT", "50000m")
 
-	url := urlvars{url_int: urlinterval, url_path: urlpath, warning_bw: urlwarning, critical_bw: urlcritical}
+	var usedebug bool
+	urlbool, exists := os.LookupEnv("USE_DEBUG")
+    if !exists {
+		usedebug = false
+		urlbool = "false"
+	} else {
+		usedebug = true
+		urlbool = "true"
+	}
+
+	if urlbool == "true" {
+		fmt.Println("the debug level is set to 1")
+	}
+	
+	urlpath := "http://" + url_client + "/iperf/api.cgi?server=" + iprefserver + ",port=5001,type=json"
+	url := urlvars{url_int: urlinterval, url_path: urlpath, warning_bw: urlwarning, critical_bw: urlcritical, url_debug: usedebug}
 
 	RunCheck(url)
 }

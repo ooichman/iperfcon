@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iperf-client
+spec:
+  selector:
+    matchLabels:
+      app: iperf-client
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: iperf-client
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - iperf-server
+            topologyKey: kubernetes.io/hostname
+      containers:
+        - name: iperf-client
+          image: quay.io/ooichman/iperf-client
+          ports:
+            - containerPort: 8080

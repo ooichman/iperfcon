@@ -1,0 +1,6 @@
+---
+- name: deploying the iperf-server pod
+  hosts: localhost
+  gather_facts: false
+  roles:
+  - iperfcon

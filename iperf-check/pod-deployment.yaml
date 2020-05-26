@@ -16,3 +16,17 @@ spec:
       containers:
         - name: iperf-check
           image: quay.io/ooichman/iperf-check
+          env:
+          - name: URL_INTERVAL
+            value: 30
+          - name: IPREF_CLIENT_URI
+            value: ''
+          - name: IPREF_SERVER 
+            value: ''
+          - name: WARNING_LIMIT
+            value: 50000m
+          - name: CRITICAL_LIMIT
+            value: 30000m
+          - name: USE_DEBUG
+            value: False
+
