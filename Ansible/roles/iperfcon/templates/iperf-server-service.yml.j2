@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: iperf-server
+  namespace: iperf
+spec:
+  selector:
+    app: iperf-server
+  ports:
+    - protocol: TCP
+      port: 5001
+      targetPort: 5001
