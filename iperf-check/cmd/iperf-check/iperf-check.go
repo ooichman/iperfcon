@@ -83,18 +83,19 @@ func main() {
 	urlwarning := getEnv("WARNING_LIMIT", "50000m")
 
 	var usedebug bool
-	urlbool, exists := os.LookupEnv("USE_DEBUG")
+	_ , exists := os.LookupEnv("USE_DEBUG")
+	//urlbool, exists := os.LookupEnv("USE_DEBUG")
     if !exists {
 		usedebug = false
-		urlbool = "false"
+	//	urlbool = "false"
 	} else {
 		usedebug = true
-		urlbool = "true"
+	//	urlbool = "true"
 	}
 
-	if urlbool == "true" {
-		fmt.Println("the debug level is set to 1")
-	}
+	//if urlbool == "true" {
+	//	fmt.Println("the debug level is set to 1")
+	//}
 	
 	urlpath := "http://" + url_client + "/iperf/api.cgi?server=" + iprefserver + ",port=5001,type=json"
 	url := urlvars{url_int: urlinterval, url_path: urlpath, warning_bw: urlwarning, critical_bw: urlcritical, url_debug: usedebug}
