@@ -1,13 +1,22 @@
-FROM registry.redhat.io/ubi8
-MAINTAINER Oren Oichman
+FROM ubi8/go-toolset as build
+MAINTAINER Oren Oichman "Back to Root!!!"
 
-COPY iperf3-3.5-3.el8.x86_64.rpm /
-RUN  yum update -y && yum install -y iperf3-3.5-3.el8.x86_64.rpm python3 && yum clean all && rm -f iperf3-3.5-3.el8.x86_64.rpm
+WORKDIR /opt/app-root
+
+COPY iperf-client.go iperf-client.go
+RUN go build iperf-client.go
+
+FROM registry.redhat.io/ubi8/ubi-minimal
+MAINTAINER Oren Oichman "Back to Root!!!"
+
+WORKDIR /opt/app-root
+COPY --from=build /opt/app-root/iperf-client /opt/app-root/iperf-client
+
+COPY iperf3-3.5-3.el8.x86_64.rpm /opt/app-root
+RUN  rpm -Uvi iperf3-3.5-3.el8.x86_64.rpm && rm -f iperf3-3.5-3.el8.x86_64.rpm
+
 USER 1001
-COPY iperfcon.py /home/iperf/
-
 EXPOSE 8080
 
-CMD ["python3", "/home/iperf/iperfcon.py"]
-
+ENTRYPOINT ["./iperf-client"]
 
