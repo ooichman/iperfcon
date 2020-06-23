@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"time"
 	"net/http"
 	"strings"
 	"regexp"
@@ -68,19 +69,18 @@ func checkFormat(ipc iperfValues) int64 {
 	return duplicateNum
 }
 
+func PrintHTML(w http.ResponseWriter, sFlag string, iperfSS float64, iperfSR float64) {
+
+	HTMLvalue1 := "<html><head><title> the Iperf Output results </title><body><table><tr><td> Status </td><td>"
+ 	HTMLvalue2 := "</td></tr><tr><td> Received bit Symmery </td><td>" 
+	HTMLvalue3 := "</td></tr><tr><td> Sending bit summery  </td><td>" 
+	HTMLvalue4 := "</td></tr></table></body></html>"
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	fmt.Fprintf(w,"%s %s %s %.2f %s %.2f %s",HTMLvalue1, sFlag , HTMLvalue2, iperfSR , HTMLvalue3 ,iperfSS ,HTMLvalue4 )
+}
+
 func RunningIperf(ipc iperfValues,w http.ResponseWriter) {
-
-	iperfCommand := "/usr/bin/iperf3"
-//	log.Printf("the comman is %s\n", iperfCommand)
-
-	cmd := exec.Command(iperfCommand,"-c",ipc.serverAddr,"-p",ipc.portNumber,"-J","-t","2","-i","0.5")
-	out, cmderr := cmd.Output()
-
-	if cmderr != nil {
-		fmt.Fprintf(w,"there was an error running iperf with the given arguments: %+v\n",cmderr)
-		http.Error(w,"", 502)
-		return
-	}
 
 	var statusFlag string
 	var iperfSumSent float64
@@ -88,6 +88,21 @@ func RunningIperf(ipc iperfValues,w http.ResponseWriter) {
 	var critalNum float64
 	var warningNum float64
 	var ipout IperfOutput
+
+	t := time.Now()
+
+	iperfCommand := "iperf3"
+//	log.Printf("the comman is %s\n", iperfCommand)
+
+	cmd := exec.Command(iperfCommand,"-c",ipc.serverAddr,"-p",ipc.portNumber,"-J","-t","2","-i","0.5")
+	out, cmderr := cmd.Output()
+
+	if cmderr != nil {
+		fmt.Fprintf(w,"there was an error running iperf with the given arguments: %+v\n",cmderr)
+		http.Error(w, "", 502)
+		return
+	}
+
 	err := json.Unmarshal([]byte(out), &ipout)
 
 	if err != nil {
@@ -112,10 +127,13 @@ func RunningIperf(ipc iperfValues,w http.ResponseWriter) {
 
 	fmt.Sscan(ipc.iperfCritical, &critalNum)
 	fmt.Sscan(ipc.iperfWarning, &warningNum)
+	mydate := fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d",t.Year(),t.Month(),t.Day(),t.Hour(),t.Minute(),t.Second())
 
 //	critalNum = critalNum * float64(duplicateSum)
 //	warningNum = warningNum * float64(duplicateSum)
 	
+//	fmt.Fprintf(w,"critical : %f , warnging: %f \n" , critalNum, warningNum )	
+
 	if sumAvrg <= critalNum {
 		statusFlag = "Critical"
 	} else if sumAvrg <= warningNum {
@@ -123,8 +141,21 @@ func RunningIperf(ipc iperfValues,w http.ResponseWriter) {
 	} else {
 		statusFlag = "O.k"
 	}
-//	fmt.Fprintf(w,"critalNum is : %f , warningNum is %f", critalNum, warningNum)
-	fmt.Fprintf(w,"{ \"Status\": \"%s\" , \"PacketSent\": \"%f\" , \"PacketReceived: \"%f\"\n", statusFlag, iperfSumSent , iperfSumRec )
+
+	if ipc.outputType == "json" {
+	fmt.Fprintf(w,"{ \"iperfResult\":  { \"date\": \"%s\",\"Status\": \"%s\",\"Rate\": \"%sBit/Sec\",\"PacketSent\": %.2f, \"PacketReceived\": %.2f}}\n",  
+		mydate ,statusFlag , ipc.iperfFormat , iperfSumSent , iperfSumRec )	
+	//	fmt.Fprintf(w,"critalNum is : %f , warningNum is %f", critalNum, warningNum)
+	} else if ipc.outputType == "html" {
+		PrintHTML(w, statusFlag, iperfSumSent , iperfSumRec)
+	} else if ipc.outputType == "log" {
+		fmt.Fprintf(w,"%s - Status : %s , Rate : %sBit/Sec, PacketSent: %.2f , PacketReceived: %.2f \n" , 
+			mydate , statusFlag , ipc.iperfFormat , iperfSumSent , iperfSumRec )
+	} else {
+		fmt.Fprintf(w,"Error: wrong Output type provided\n")
+		http.Error(w,"", 505)
+		return
+	}
 
 }
 
@@ -157,39 +188,39 @@ func GetHandle(w http.ResponseWriter, r *http.Request) {
 		if serverReg.MatchString(splitquery[i]) {
 				serverSplit := strings.Split(splitquery[i], "=")
 				iperfClient.serverAddr = serverSplit[1]
-//				log.Printf("the Iperf Server IP Address is : %s", iperfClient.serverAddr)
+				log.Printf("the Iperf Server IP Address is : %s", iperfClient.serverAddr)
 		}
 
 		portReg := regexp.MustCompile(`(port){1}`)
 		if portReg.MatchString(splitquery[i]) {
 				portSplit := strings.Split(splitquery[i], "=")
 				iperfClient.portNumber = portSplit[1]
-//				log.Printf("the Iperf Port Number is %s", iperfClient.portNumber)
+				log.Printf("the Iperf Port Number is %s", iperfClient.portNumber)
 		}
 
 		typeReg := regexp.MustCompile(`(type){1}`)
 		if typeReg.MatchString(splitquery[i]) {
 				typeSplit := strings.Split(splitquery[i], "=")
 				iperfClient.outputType = typeSplit[1]
-//				log.Printf("the Iperf output type is %s", iperfClient.outputType)
+				log.Printf("the Iperf output type is %s", iperfClient.outputType)
 		}
 		warngingReg := regexp.MustCompile(`(warnging){1}`)
 		if warngingReg.MatchString(splitquery[i]) {
 				warngSplit := strings.Split(splitquery[i], "=")
 				iperfClient.iperfWarning = warngSplit[1]
-//				log.Printf("the warnging limit is %s", iperfClient.iperfWarning)
+				log.Printf("the warnging limit is %s", iperfClient.iperfWarning)
 		}
 		criticalReg := regexp.MustCompile(`(critical){1}`)
 		if criticalReg.MatchString(splitquery[i]) {
 				crticalSplit := strings.Split(splitquery[i], "=")
 				iperfClient.iperfCritical = crticalSplit[1]
-//				log.Printf("the critical limit is %s", iperfClient.iperfCritical)
+				log.Printf("the critical limit is %s", iperfClient.iperfCritical)
 		}
 		formatReg := regexp.MustCompile(`(format){1}`)
 		if formatReg.MatchString(splitquery[i]) {
 				formatSplit := strings.Split(splitquery[i], "=")
 				iperfClient.iperfFormat = formatSplit[1]
-//				log.Printf("the Format is %s", iperfClient.iperfFormat)
+				log.Printf("the Format is %s", iperfClient.iperfFormat)
 		}
     }
 

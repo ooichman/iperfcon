@@ -24,9 +24,10 @@ spec:
           - name: IPREF_SERVER 
             value: ''
           - name: WARNING_LIMIT
-            value: 50000m
+            value: 5000
           - name: CRITICAL_LIMIT
-            value: 30000m
+            value: 3000
           - name: USE_DEBUG
             value: False
-
+          - name: IPERF_FORMAT
+            value: M
