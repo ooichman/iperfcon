@@ -188,44 +188,44 @@ func GetHandle(w http.ResponseWriter, r *http.Request) {
 		if serverReg.MatchString(splitquery[i]) {
 				serverSplit := strings.Split(splitquery[i], "=")
 				iperfClient.serverAddr = serverSplit[1]
-				log.Printf("the Iperf Server IP Address is : %s", iperfClient.serverAddr)
 		}
 
 		portReg := regexp.MustCompile(`(port){1}`)
 		if portReg.MatchString(splitquery[i]) {
 				portSplit := strings.Split(splitquery[i], "=")
 				iperfClient.portNumber = portSplit[1]
-				log.Printf("the Iperf Port Number is %s", iperfClient.portNumber)
 		}
 
 		typeReg := regexp.MustCompile(`(type){1}`)
 		if typeReg.MatchString(splitquery[i]) {
 				typeSplit := strings.Split(splitquery[i], "=")
 				iperfClient.outputType = typeSplit[1]
-				log.Printf("the Iperf output type is %s", iperfClient.outputType)
 		}
+
 		warngingReg := regexp.MustCompile(`(warnging){1}`)
 		if warngingReg.MatchString(splitquery[i]) {
 				warngSplit := strings.Split(splitquery[i], "=")
 				iperfClient.iperfWarning = warngSplit[1]
-				log.Printf("the warnging limit is %s", iperfClient.iperfWarning)
 		}
+
 		criticalReg := regexp.MustCompile(`(critical){1}`)
 		if criticalReg.MatchString(splitquery[i]) {
 				crticalSplit := strings.Split(splitquery[i], "=")
 				iperfClient.iperfCritical = crticalSplit[1]
-				log.Printf("the critical limit is %s", iperfClient.iperfCritical)
 		}
+
 		formatReg := regexp.MustCompile(`(format){1}`)
 		if formatReg.MatchString(splitquery[i]) {
 				formatSplit := strings.Split(splitquery[i], "=")
 				iperfClient.iperfFormat = formatSplit[1]
-				log.Printf("the Format is %s", iperfClient.iperfFormat)
 		}
     }
 
-    RunningIperf(iperfClient,w)
-    
+    log.Printf("Server IP Address is : %s , Port Number is %s , Output type is %s , warnging : %s , Critical: %s Format: %s", 
+    	iperfClient.serverAddr, iperfClient.portNumber , iperfClient.outputType , iperfClient.iperfWarning , iperfClient.iperfCritical ,
+    	iperfClient.iperfFormat )
+    	
+    RunningIperf(iperfClient,w)    
 }
 
 func main() {

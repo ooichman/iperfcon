@@ -12,6 +12,8 @@ import (
 type urlvars struct {
 	url_int     string
 	url_path    string
+	server_port string
+	server_path string
 	warning_bw  string
 	critical_bw string
 	outputFormat string
@@ -66,33 +68,35 @@ func RunCheck(myvars urlvars) {
 func main() {
 
 	// checking and testing the environment variables
+	var url urlvars
 
-	urlinterval := getEnv("URL_INTERVAL", "300")
-	url_client := getEnv("IPREF_CLIENT_URI", "nil")
+	url.url_int = getEnv("URL_INTERVAL", "300")
+	url.url_path = getEnv("IPREF_CLIENT_URI", "nil")
 
-	if url_client == "nil" {
+	if url.url_path == "nil" {
 		fmt.Println("Error - the IPREF_CLIENT_URI is not set")
 		os.Exit(3)
 	}
 
-	iprefserver := getEnv("IPREF_SERVER","nil")
+	url.server_path = getEnv("IPREF_SERVER","nil")
 	
-	if iprefserver == "nil" {
+	if url.server_path == "nil" {
 		fmt.Println("Error - the IPREF_SERVER is not set")
 	}
 
-	urlcritical := getEnv("CRITICAL_LIMIT", "3000")
-	urlwarning := getEnv("WARNING_LIMIT", "5000")
+	url.server_port = getEnv("SERVER_PORT", "5001")
+	url.critical_bw = getEnv("CRITICAL_LIMIT", "3000")
+	url.warning_bw = getEnv("WARNING_LIMIT", "5000")
 
-	iperformat := getEnv("IPERF_FORMAT", "m")
-	var usedebug bool
+	url.outputFormat = getEnv("IPERF_FORMAT", "m")
+	
 	_ , exists := os.LookupEnv("USE_DEBUG")
 	//urlbool, exists := os.LookupEnv("USE_DEBUG")
     if !exists {
-		usedebug = false
+    	url.url_debug = false
 	//	urlbool = "false"
 	} else {
-		usedebug = true
+		url.url_debug = true
 	//	urlbool = "true"
 	}
 
@@ -100,8 +104,6 @@ func main() {
 	//	fmt.Println("the debug level is set to 1")
 	//}
 	
-	urlpath := "http://" + url_client + "/iperf/status?server=" + iprefserver + ",port=5001,type=json"
-	url := urlvars{url_int: urlinterval, url_path: urlpath, warning_bw: urlwarning, critical_bw: urlcritical, outputFormat: iperformat , url_debug: usedebug}
-
+	url.url_path = "http://" + url.url_path + "/iperf/status?server=" + url.server_path + ",port=" + url.server_port + ",type=" + url.outputFormat
 	RunCheck(url)
 }

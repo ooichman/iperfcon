@@ -25,9 +25,13 @@ spec:
             value: ''
           - name: WARNING_LIMIT
             value: 5000
+          - name: SERVER_PORT
+            value: 5001
           - name: CRITICAL_LIMIT
             value: 3000
           - name: USE_DEBUG
             value: False
-          - name: IPERF_FORMAT
+          - name: BITPERSEC_FORMAT
             value: M
+          - name: OUTPUT_FORMAT
+            value: log
