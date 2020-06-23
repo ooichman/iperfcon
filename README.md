@@ -38,11 +38,10 @@ Now let's run the deployment for both Deployments
 
 The iperf-server container has 2 environment variables you can run in the deployment:
 
-- IPERF_PROTOCOL - choose between tcp and udp (default: tcp)
-- IPERF_PORT - choose the port on which the iperf server will listen upon (default: 5001)
+   - IPERF_PROTOCOL - choose between tcp and udp (default: tcp)
+   - IPERF_PORT - choose the port on which the iperf server will listen upon (default: 5001)
 
-
-     # oc create -f iperfcon/iperf-server/pod-deployment.yaml
+    # oc create -f iperfcon/iperf-server/pod-deployment.yaml
 
 Now deploy the iperf-client 
 
