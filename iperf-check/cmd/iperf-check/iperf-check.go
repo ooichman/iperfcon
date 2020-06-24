@@ -18,6 +18,7 @@ type urlvars struct {
 	critical_bw string
 	outputFormat string
 	url_debug	bool
+	check_type  string
 }
 
 func getEnv(key, fallback string) string {
@@ -83,7 +84,7 @@ func main() {
 	if url.server_path == "nil" {
 		fmt.Println("Error - the IPREF_SERVER is not set")
 	}
-
+	url.check_type = getEnv("CHECK_TYPE", "interval")
 	url.server_port = getEnv("SERVER_PORT", "5001")
 	url.critical_bw = getEnv("CRITICAL_LIMIT", "3000")
 	url.warning_bw = getEnv("WARNING_LIMIT", "5000")

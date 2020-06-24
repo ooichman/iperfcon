@@ -41,11 +41,11 @@ The iperf-server container has 2 environment variables you can run in the deploy
    - IPERF_PROTOCOL - choose between tcp and udp (default: tcp)
    - IPERF_PORT - choose the port on which the iperf server will listen upon (default: 5001)
 
-    # oc create -f iperfcon/iperf-server/pod-deployment.yaml
+    # oc create -f iperfcon/iperf-server/pod-deployment-antiaffinity.yaml
 
 Now deploy the iperf-client 
 
-    # oc create -f iperfcon/iperf-client/pod-deployment.yaml
+    # oc create -f iperfcon/iperf-client/pod-deployment-antiaffinity.yaml
 
 Deploy the services
 
@@ -68,6 +68,28 @@ Now make sure the pods are deployed as you expected:
 
     # oc get pods -n iperf -o wide
 
+### Ansible
+
+the Ansible deployment is much more easier , all we need to to is run the playbook from a station
+connected to the OpenShift/Kuberenetes cluster
+
+First we need to clone the repo 
+
+    # git clone https://github.com/ooichman/iperfcon.git
+
+next we will run the ansible playbook from it's parent directory :
+
+    # cd iperfconf/Ansible
+    # ansible-playbook -i inventory main.yaml
+
+Once the playbook is completed make sure the pods are deployed as you expected:
+
+    # oc get pods -n iperf -o wide
+
+### Operator
+
+Will be modified in the near future ...
+
 ## How to Use it
 now run the curl command to the route to get the results:
 
@@ -89,3 +111,4 @@ if you want to look at the results in a nicer output you can pipe it to jq
     # curl -X GET  \
       http://iperf-client-router/iperf/api.cgi?server=iperf-server-service,port=5001,type=json,format=M,critical=3000,warnging=5000 | \
       jq
+
