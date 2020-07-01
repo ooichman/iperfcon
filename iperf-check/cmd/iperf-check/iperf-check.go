@@ -17,8 +17,8 @@ type urlvars struct {
 	warning_bw  string
 	critical_bw string
 	outputFormat string
+	outputType string
 	url_debug	bool
-	check_type  string
 }
 
 func getEnv(key, fallback string) string {
@@ -31,39 +31,44 @@ func getEnv(key, fallback string) string {
 
 func RunCheck(myvars urlvars) {
 
+	var x int
 	fullurl := myvars.url_path
 	fullurl += ",critical=" + myvars.critical_bw
 	fullurl += ",warnging=" + myvars.warning_bw
 	fullurl += ",format=" + myvars.outputFormat
 
-	var x int
-	if _, err := fmt.Sscan(myvars.url_int, &x); err == nil {
-		if myvars.url_debug == true {
-			fmt.Printf("the inteval is %d seconds\n", x)
-		}
-	} else {
-     	os.Exit(2)
+	if myvars.url_debug == true {
+		fmt.Printf("the url is %s",fullurl)
 	}
-
-    for {
-		resp, err := http.Get(fullurl)
-		if err == nil {
+	
+		if _, err := fmt.Sscan(myvars.url_int, &x); err == nil {
 			if myvars.url_debug == true {
-				fmt.Printf("GET for %s was successful\n", fullurl)
+				fmt.Printf("the inteval is %d seconds\n", x)
 			}
-			defer resp.Body.Close()
-		    _, err = io.Copy(os.Stdout, resp.Body)
-            if err != nil {
-                log.Fatal(err)
-            }
 		} else {
-			fmt.Printf("Unable to reach %s\n", fullurl)
-			os.Exit(3)
+     		os.Exit(2)
 		}
+
+    	for {
+			resp, err := http.Get(fullurl)
+			if err == nil {
+				if myvars.url_debug == true {
+					fmt.Printf("GET for %s was successful\n", fullurl)
+				}
+				defer resp.Body.Close()
+		    	_, err = io.Copy(os.Stdout, resp.Body)
+            	if err != nil {
+                	log.Fatal(err)
+            	}
+			} else {
+				fmt.Printf("Unable to reach %s\n", fullurl)
+				os.Exit(3)
+			}
 		
-		time.Sleep(time.Second * time.Duration(x)) 
+			time.Sleep(time.Second * time.Duration(x)) 
 		
-    }
+    	}
+	
 }
 
 func main() {
@@ -84,7 +89,7 @@ func main() {
 	if url.server_path == "nil" {
 		fmt.Println("Error - the IPREF_SERVER is not set")
 	}
-	url.check_type = getEnv("CHECK_TYPE", "interval")
+
 	url.server_port = getEnv("SERVER_PORT", "5001")
 	url.critical_bw = getEnv("CRITICAL_LIMIT", "3000")
 	url.warning_bw = getEnv("WARNING_LIMIT", "5000")
@@ -95,16 +100,22 @@ func main() {
 	//urlbool, exists := os.LookupEnv("USE_DEBUG")
     if !exists {
     	url.url_debug = false
-	//	urlbool = "false"
+//	urlbool = "false"
 	} else {
 		url.url_debug = true
 	//	urlbool = "true"
 	}
 
+	url.outputType = getEnv("OUTPUT_TYPE", "log" )
 	//if urlbool == "true" {
 	//	fmt.Println("the debug level is set to 1")
 	//}
 	
-	url.url_path = "http://" + url.url_path + "/iperf/status?server=" + url.server_path + ",port=" + url.server_port + ",type=" + url.outputFormat
+	url.url_path = "http://" + url.url_path + "/iperf/status?server="
+	url.url_path += url.server_path + ",port=" + url.server_port 
+	url.url_path += ",type=" + url.outputType
+
+
+
 	RunCheck(url)
 }

@@ -56,13 +56,31 @@ And deploy the route
 
     # oc create -f iperfcon/iperf-client/route.yaml
 
-For the iperf-check first lets edit the deployment YAML and make sure all the values are in place :
+#### Interval
+
+For ruuning checks in an interval and obtaining the output from the logs deploy iperf-check 
+
+first lets edit the deployment YAML and make sure all the values are in place :
 
     # vi iperfcon/iperf-check/pod-deployment.yaml
 
 Once we are done with the setting then we can run the deployment :
 
     # oc create -f iperfcon/iperf-check/pod-deployment.yaml
+
+#### exporter
+
+another way of getting the result is running the exporter pod and then have prometheus obtaioning 
+the result through the expoter:
+
+    # oc create -f iperfcon/iperf-exportedr/pod-deployment.yaml
+
+and create a service and a route for the iperf-exporter :
+
+    # oc create -f iperfcon/iperf-exporter/service.yaml
+    # oc create -f iperfcon/iperf-exporter/route.yaml
+
+### Avilability 
 
 Now make sure the pods are deployed as you expected:
 
