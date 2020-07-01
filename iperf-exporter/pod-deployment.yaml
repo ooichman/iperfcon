@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iperf-exporter
+  namespace: iperf
+spec:
+  selector:
+    matchLabels:
+      app: iperf-exporter
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: iperf-exporter
+    spec:
+      containers:
+        - name: iperf-exporter
+          image: quay.io/ooichman/iperf-exporter
+          env:
+          - name: IPREF_CLIENT_URI
+            value: ''
+          - name: IPREF_SERVER 
+            value: ''
+          - name: WARNING_LIMIT
+            value: 5000
+          - name: IPERF_EXPORTER_PORT
+            value: 8080
+          - name: SERVER_PORT
+            value: 5001
+          - name: CRITICAL_LIMIT
+            value: 3000
+          - name: USE_DEBUG
+            value: False
+          - name: BITPERSEC_FORMAT
+            value: M
