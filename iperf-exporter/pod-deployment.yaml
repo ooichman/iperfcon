@@ -24,7 +24,7 @@ spec:
           - name: WARNING_LIMIT
             value: 5000
           - name: IPERF_EXPORTER_PORT
-            value: 8080
+            value: 9100
           - name: SERVER_PORT
             value: 5001
           - name: CRITICAL_LIMIT

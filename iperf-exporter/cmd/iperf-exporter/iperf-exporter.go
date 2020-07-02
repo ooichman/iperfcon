@@ -53,8 +53,8 @@ const doc = `
 <p style="margin-bottom:0; padding-top:0;">iperf_exporter_status {{.Status}}</p>
 <p style="margin-bottom:0; padding-top:0;">iperf_exporter_warnging {{.Warnging}}</p>
 <p style="margin-bottom:0; padding-top:0;">iperf_exporter_critical {{.Critical}}</p>
-<p style="margin-bottom:0; padding-top:0;">iperf_exporter_packetsent {{.PacketSent}}</p>
-<p style="margin-bottom:0; padding-top:0;">iperf_exporter_packetreceived {{.PacketReceived}}</p>
+<p style="margin-bottom:0; padding-top:0;">iperf_exporter_packet_sent {{.PacketSent}}</p>
+<p style="margin-bottom:0; padding-top:0;">iperf_exporter_packet_received {{.PacketReceived}}</p>
 </body>
 </html>
 `
@@ -75,14 +75,15 @@ func (url *urlvars) MetHandle(w http.ResponseWriter, r *http.Request) {
 	var critical_bw int
 	var cmdOputput IperfOutput
 
-	url.url_path = "http://" + url.url_path + "/iperf/status?server="
-	url.url_path += url.server_path + ",port=" + url.server_port 
-	url.url_path += ",type=json" + ",format=" + url.outputFormat
+
+	fullpath := "http://" + url.url_path + "/iperf/status?server="
+	fullpath += url.server_path + ",port=" + url.server_port 
+	fullpath += ",type=json" + ",format=" + url.outputFormat
 
 	w.Header().Add("Content Type", "text/html")
-	tmpl ,err := template.New("PrometheusTemplate").Parse(doc)
+	tmpl ,temperr := template.New("PrometheusTemplate").Parse(doc)
 
-	resp, err := http.Get(url.url_path)
+	resp, err := http.Get(fullpath)
 	if err != nil {
     	log.Fatal(err)
     }
@@ -97,8 +98,12 @@ func (url *urlvars) MetHandle(w http.ResponseWriter, r *http.Request) {
 	fmt.Sscan(url.warning_bw , &warning_bw)
 	fmt.Sscan(url.critical_bw , &critical_bw)
 
-	if err == nil {
-		temp_res := TempResult{0, warning_bw , critical_bw , cmdOputput.IperfResult.PacketSent , cmdOputput.IperfResult.PacketReceived }
+	if temperr == nil {
+		temp_res := TempResult{0, 
+		warning_bw , 
+		critical_bw , 
+		cmdOputput.IperfResult.PacketSent , 
+		cmdOputput.IperfResult.PacketReceived }
 		tmpl.Execute(w, temp_res)
 	}
 
