@@ -74,7 +74,7 @@ func (url *urlvars) MetHandle(w http.ResponseWriter, r *http.Request) {
 	var warning_bw int
 	var critical_bw int
 	var cmdOputput IperfOutput
-
+	var status int
 
 	fullpath := "http://" + url.url_path + "/iperf/status?server="
 	fullpath += url.server_path + ",port=" + url.server_port 
@@ -98,8 +98,16 @@ func (url *urlvars) MetHandle(w http.ResponseWriter, r *http.Request) {
 	fmt.Sscan(url.warning_bw , &warning_bw)
 	fmt.Sscan(url.critical_bw , &critical_bw)
 
+	if cmdOputput.IperfResult.Status == "O.k" {
+		status = 0
+	} else if cmdOputput.IperfResult.Status == "Warning" {
+		status = 1
+	} else if cmdOputput.IperfResult.Status == "Critical" {
+		status = 2
+	}
+	
 	if temperr == nil {
-		temp_res := TempResult{0, 
+		temp_res := TempResult{ status, 
 		warning_bw , 
 		critical_bw , 
 		cmdOputput.IperfResult.PacketSent , 
