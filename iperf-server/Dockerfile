@@ -1,4 +1,4 @@
-FROM registry.redhat.io/ubi8/ubi-minimal
+FROM quay.io/ooichman/ubi-minimal
 MAINTAINER Oren Oichman "Back to ROOT !!!"
 
 COPY run-server.sh /usr/sbin/
