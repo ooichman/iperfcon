@@ -1,4 +1,4 @@
-FROM ubi8/ubi-minimal
+FROM registry.redhat.io/ubi8/ubi-minimal
 MAINTAINER Oren Oichman "Back to ROOT !!!"
 
 COPY run-server.sh /usr/sbin/

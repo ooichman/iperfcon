@@ -1,4 +1,4 @@
-FROM ubi8/go-toolset as build
+FROM registry.redhat.io/ubi8/go-toolset as build
 MAINTAINER Oren Oichman "Back to Root!!!"
 
 WORKDIR /opt/app-root
