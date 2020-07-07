@@ -1,4 +1,4 @@
-FROM registry.redhat.io/ubi8/ubi-minimal
+FROM bastion-1.c.oren-212107.internal/ubi8/ubi-minimal
 MAINTAINER Oren Oichman "Back to ROOT !!!"
 
 COPY run-server.sh /usr/sbin/
