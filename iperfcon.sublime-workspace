@@ -276,7 +276,7 @@
 	"buffers":
 	[
 		{
-			"contents": "2;Terminal 1ooichman@ooichman ~/Projects/Containers/iperfcon $                                                                                     \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n",
+			"contents": "2;Terminal 10ooichman@ooichman ~/Projects/Containers/iperfcon $                                                                                    \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n                                                                                                                                                   \n",
 			"settings":
 			{
 				"buffer_size": 1480,
@@ -468,8 +468,20 @@
 								"regions":
 								[
 									[
-										12,
-										29
+										1480,
+										1480
+									]
+								],
+								"scope": "terminalview.black_cyan"
+							},
+							"0,13":
+							{
+								"flags": 272,
+								"regions":
+								[
+									[
+										13,
+										30
 									]
 								],
 								"scope": "terminalview.black_cyan"
@@ -492,8 +504,20 @@
 								"regions":
 								[
 									[
-										29,
-										62
+										1480,
+										1480
+									]
+								],
+								"scope": "terminalview.black_brown"
+							},
+							"0,30":
+							{
+								"flags": 272,
+								"regions":
+								[
+									[
+										30,
+										63
 									]
 								],
 								"scope": "terminalview.black_brown"
@@ -502,8 +526,8 @@
 						"selection":
 						[
 							[
-								63,
-								63
+								64,
+								64
 							]
 						],
 						"settings":
@@ -531,7 +555,7 @@
 							"terminal_view_last_cursor_pos":
 							[
 								0,
-								63
+								64
 							],
 							"word_wrap": false
 						},

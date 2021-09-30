@@ -43,6 +43,7 @@ type iperfValues struct {
 }
 
 func getEnv(key, fallback string) string {
+	var value string
 	value, exists := os.LookupEnv(key)
 	if !exists {
 		value = fallback
@@ -231,7 +232,7 @@ func GetHandle(w http.ResponseWriter, r *http.Request) {
 func main() {
 	
     servicePort := getEnv("IPERF_CLIENT_PORT", "8080")
-    servicePort = ":"+servicePort
+    servicePort =  ":" + servicePort
 	http.HandleFunc("/iperf/api.cgi", GetHandle)
 	http.HandleFunc("/iperf/status", GetHandle)
 

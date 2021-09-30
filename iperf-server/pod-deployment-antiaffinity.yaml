@@ -26,10 +26,10 @@ spec:
       containers:
         - name: iperf-server
           image: quay.io/ooichman/iperf-server:latest
-           env:
+          env:
           - name: IPERF_PROTOCOL
-            value: tcp
+            value: tc
           - name: IPERF_PORT
-            value: 5001
+            value: "5001"
           ports:
             - containerPort: 5001

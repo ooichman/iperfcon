@@ -26,5 +26,8 @@ spec:
       containers:
         - name: iperf-client
           image: quay.io/ooichman/iperf-client
+          env:
+            - name: IPERF_CLIENT_PORT
+              value: "8080"
           ports:
             - containerPort: 8080
