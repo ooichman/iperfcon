@@ -28,7 +28,7 @@ spec:
           image: quay.io/ooichman/iperf-server:latest
           env:
           - name: IPERF_PROTOCOL
-            value: tc
+            value: tcp
           - name: IPERF_PORT
             value: "5001"
           ports:
