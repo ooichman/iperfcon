@@ -1,3 +1,9 @@
 #!/bin/bash
-	buildah bud -f Dockerfile -t quay.io/ooichman/iperf-server .
-	buildah push quay.io/ooichman/iperf-server
+
+	if [[ -z ${1} ]]; then
+		buildah bud -f Containerfile -t iperf-server .
+    else
+    	CONTAINER_TAG=${1}
+    	buildah bud -f Containerfile -t ${CONTAINER_TAG}
+ 		buildah push ${CONTAINER_TAG}
+ 	fi
