@@ -25,7 +25,7 @@ spec:
             topologyKey: kubernetes.io/hostname
       containers:
         - name: iperf-server
-          image: quay.io/ooichman/iperf-server:latest
+          image: quay.io/two.oes/iperf-server:latest
           env:
           - name: IPERF_PROTOCOL
             value: tcp

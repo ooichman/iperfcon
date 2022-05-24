@@ -25,7 +25,7 @@ spec:
             topologyKey: kubernetes.io/hostname
       containers:
         - name: iperf-client
-          image: quay.io/ooichman/iperf-client
+          image: quay.io/two.oes/iperf-client
           env:
             - name: IPERF_CLIENT_PORT
               value: "8080"
