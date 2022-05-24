@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: iperf-server
-          image: quay.io/ooichman/iperf-server:latest
+          image: quay.io/two.oes/iperf-server:latest
           ports:
             - containerPort: 5001
