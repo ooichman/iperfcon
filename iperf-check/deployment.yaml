@@ -18,19 +18,19 @@ spec:
           image: quay.io/two.oes/iperf-check
           env:
           - name: URL_INTERVAL
-            value: 30
+            value: "30"
           - name: IPREF_CLIENT_URI
             value: ''
           - name: IPREF_SERVER 
-            value: ''
+            value: 'iperf-server.iperf.svc'
           - name: WARNING_LIMIT
-            value: 5000
+            value: "5000"
           - name: SERVER_PORT
-            value: 5001
+            value: "5001"
           - name: CRITICAL_LIMIT
-            value: 3000
+            value: "3000"
           - name: USE_DEBUG
-            value: False
+            value: "false"
           - name: BITPERSEC_FORMAT
             value: M
           - name: OUTPUT_FORMAT

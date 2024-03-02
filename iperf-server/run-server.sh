@@ -12,9 +12,9 @@ fi
 case "${IPERF_PROTOCOL}" in
 
 	'tcp')
-		IPERFCMD="/usr/bin/iperf3 -s -p ${IPERF_PORT}"
+		IPERFCMD="/usr/local/bin/iperf3 -s -p ${IPERF_PORT}"
 	;;
 	'udp')
-		IPERFCMD="/usr/bin/iperf3 -s -u -p ${IPERF_PORT}"
+		IPERFCMD="/usr/local/bin/iperf3 -s -u -p ${IPERF_PORT}"
 esac
 ${IPERFCMD}

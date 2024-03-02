@@ -1,9 +1,9 @@
 #!/bin/bash
 
 	if [[ -z ${1} ]]; then
-		buildah bud -f Containerfile -t iperf-server .
+		buildah bud -f Dockerfile -t iperf-server .
     else
     	CONTAINER_TAG=${1}
-    	buildah bud -f Containerfile -t ${CONTAINER_TAG}
+    	buildah bud -f Dockerfile -t ${CONTAINER_TAG}
  		buildah push ${CONTAINER_TAG}
  	fi
