@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #script for running the iperf Server
 
 if [ -z $IPERF_PROTOCOL ]; then

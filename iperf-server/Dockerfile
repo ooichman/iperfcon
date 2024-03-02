@@ -17,7 +17,7 @@ ENV PATH="/usr/local/bin"
 WORKDIR /opt/app-root
 
 COPY --from=iperf-builder /app/output /usr/local
-
+COPY run-server.sh /usr/sbin/run-server.sh
 
 USER 1001
 EXPOSE 5001
