@@ -1,13 +1,14 @@
-FROM registry.redhat.io/ubi8/go-toolset as build
+FROM golang:alpine as build
 MAINTAINER Oren Oichman "Back to Root!!!"
 
 WORKDIR /opt/app-root
 COPY cmd cmd
 RUN go build cmd/iperf-check/iperf-check.go
 
-FROM registry.redhat.io/ubi8/ubi-minimal
+FROM scratch
 
 WORKDIR /opt/app-root
 COPY --from=build /opt/app-root/iperf-check /opt/app-root/iperf-check
+COPY --from=build /etc/passwd /etc/passwd
 
-ENTRYPOINT ["./iperf-check"]
+ENTRYPOINT ["/opt/app-root/iperf-check"]
