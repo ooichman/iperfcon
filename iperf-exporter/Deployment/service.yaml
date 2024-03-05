@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: iperf-exporter
+  name: iperf-exporter
+spec:
+  ports:
+  - name: "9100"
+    port: 9100
+    protocol: TCP
+    targetPort: 9100
+  selector:
+    app: iperf-exporter
+  type: ClusterIP

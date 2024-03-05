@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iperf-exporter
+  namespace: iperf
+spec:
+  selector:
+    matchLabels:
+      app: iperf-exporter
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: iperf-exporter
+    spec:
+      containers:
+        - name: iperf-exporter
+          image: registry.gitlab.com/two.oes/iperfcon/iperf-exporter
+          env:
+          - name: IPREF_CLIENT_URI
+            value: 'iperf-client-iperf.apps.cluster-rr7hf.dynamic.redhatworkshops.io'
+          - name: IPREF_SERVER 
+            value: 'iperf-server.iperf.svc'
+          - name: WARNING_LIMIT
+            value: "5000"
+          - name: IPERF_EXPORTER_PORT
+            value: "9100"
+          - name: INTERVAL_CHECK
+            value: "5"
+          - name: SERVER_PORT
+            value: "5001"
+          - name: CRITICAL_LIMIT
+            value: "3000"
+          - name: USE_DEBUG
+            value: "false"
+          - name: BITPERSEC_FORMAT
+            value: M

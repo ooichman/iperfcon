@@ -1,15 +1,19 @@
-FROM ubi8/go-toolset as build
+FROM golang:alpine as build
 MAINTAINER Oren Oichman "Back to Root!!!"
 
 WORKDIR /opt/app-root
-COPY cmd cmd
-RUN go build cmd/iperf-exporter/iperf-exporter.go
+COPY src src
+WORKDIR /opt/app-root/src/iperf-exporter
+RUN adduser -u 1001 -D -H exporter && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o iperf-exporter
 
-FROM ubi8/ubi-minimal
+FROM scratch
+
+WORKDIR /opt/app-root
+COPY --from=build /opt/app-root/src/iperf-exporter/iperf-exporter /opt/app-root/iperf-exporter
+COPY --from=build /etc/passwd /etc/passwd
 
 USER 1001
-WORKDIR /opt/app-root
-COPY --from=build /opt/app-root/iperf-exporter /opt/app-root/iperf-exporter
-
 EXPOSE 9100
-ENTRYPOINT ["./iperf-exporter"]
+
+ENTRYPOINT ["/opt/app-root/iperf-exporter"]
